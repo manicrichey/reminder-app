@@ -5,14 +5,23 @@ var placeholder = document.querySelector('#placeholder');
 
 var todolist = [];
 
-// This function didn't work for some reason. I need to put it through the dev tools
-// function arrayToString(array){
-//     array.join(" ");
-// }
+//Object Constructor
+function reminderObject(reminderText, reminderDate){
+    this.reminder = reminderText;
+    this.date = reminderDate;
+    };
 
+//reminder:test[0].value, date:test[1].value
+function getReminderValues(){
+
+    todolist.push(new reminderObject(test[0].value, test[1].value));
+
+    // CAll function to add list items to the DOM
+    placeholder.innerHTML = addlistelement();
+} 
+
+//Add items to the DOM
 function addlistelement(){
-    //Use the .length value to just add the last element to the page
-    //console.log(todolist.length);
     
     var myarray = todolist.map(function(cur,i,arr){
         return "<li>" + cur.reminder + "</li>";
@@ -21,9 +30,9 @@ function addlistelement(){
     return myarray.join(" ");
     
 }
-function getReminderValues(){
-    todolist.push({reminder:test[0].value, date:test[1].value});
-    placeholder.innerHTML = addlistelement();
-} 
 
+
+//Event listener for 'submit' button
 buttonhook.addEventListener('click', getReminderValues,false);
+
+

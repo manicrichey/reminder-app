@@ -1,0 +1,14 @@
+ul li{
+    list-style: none;
+    color: rgb(154, 154, 165);
+    font-family: sans-serif;
+    font-size: 1.2em;
+}
+
+input {
+    background-color: antiquewhite;
+    height: 20px;
+    width: 500px;
+    display: block;
+    margin: 5px 0px 5px 0px;
+}

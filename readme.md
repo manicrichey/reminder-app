@@ -10,3 +10,5 @@ A simple app to record 'reminders'. The form will collect two fields. Reminder t
 1. Add a delete function.
 1. Add an edit function. 
 1. Use some sort of form validation to check if the items are empty.
+1. Create a valid form and prevent default
+1. Clear last entry from text field when submit is pressed
