@@ -1,5 +1,6 @@
 var test = document.querySelectorAll('input');
 
+
 var buttonhook = document.querySelector('#enterdata');
 var placeholder = document.querySelector('#placeholder');
 
@@ -9,6 +10,7 @@ var todolist = [];
 function reminderObject(reminderText, reminderDate){
     this.reminder = reminderText;
     this.date = reminderDate;
+    this.timestamp = Date.now();
     };
 
 //reminder:test[0].value, date:test[1].value
@@ -18,6 +20,8 @@ function getReminderValues(){
 
     // CAll function to add list items to the DOM
     placeholder.innerHTML = addlistelement();
+    test[0].value = "Add another item";
+    console.log(todolist);
 } 
 
 //Add items to the DOM
@@ -29,10 +33,15 @@ function addlistelement(){
 
     return myarray.join(" ");
     
+    
 }
 
 
 //Event listener for 'submit' button
 buttonhook.addEventListener('click', getReminderValues,false);
+test[0].addEventListener('focus', function(){
+    console.log("in focus");
+    test[0].value = " ";
+})
 
 

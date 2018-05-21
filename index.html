@@ -10,11 +10,15 @@
 </head>
 <body>
     <h1>Reminder App</h1>
-    <ul id="placeholder"></ul>
-    
-        <input type="text" name="reminder" value="Enter a reminder">
-        <input type="text" name="dueDate" value="Enter a date">
+    <ul id="placeholder"><li>Your reminder list is currently empty. Get Busy!</li></ul>
+    <div id="inputholder">
+        <p>Please enter a reminder in the box below</p>
+        <input type="text" name="reminder"  value="Enter a reminder">
+        <input id="date" type="date">
+        <input id="time" type="time">
         <button id="enterdata">Add Reminder</button>
+    </div>
+        
     
     <script src="app.js"></script>
 </body>
