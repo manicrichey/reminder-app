@@ -44,7 +44,7 @@ function getReminderValues(){
     
 } 
 
-//Add items to the DOM
+//Add items to the DOM using array.map to add html tags
 function addlistelement(){
     
     var myarray = todolist.map(function(cur,i,arr){
