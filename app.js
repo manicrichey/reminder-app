@@ -1,119 +1,186 @@
-//GET DOM ELEMENTS TO WORK WITH
+//Change these value to suite your HTML
 
-//Get all the form input boxes
-const inputTextBoxes = document.querySelectorAll('input');
-//Use this to display an message when form fields are left empty
-const errormsg = document.querySelector('#errormsg');
-//This is the button used to 'submit' a new reminder
-const buttonhook = document.querySelector('#enterdata');
-//This is the place in the DOM to append a new reminder as a <tr>
-const tablehook = document.querySelector('#tablehook tbody');
-console.log(tablehook.firstChild);
-//initialise todolist array
-var todolist = [];
-//initialise deleteBottonNodeList array
-var deleteBottonNodeList = [];
+var settings = {
+        
+    submitButton: "#submitButton",
+    editButton: ".editButton",
+    deleteButton: ".deleteButton",
 
-//Object Constructor (template) for a reminder item
-function reminderObject(reminderText, reminderDate){
-    this.id = todolist.length;
-    this.reminder = reminderText;
-    this.date = reminderDate;
-    this.timestamp = Date.now();
+    tableName: "#tablehook",
+    reminderTextBox: "input.reminder",
+    dateTextBox: "input.date"
+
 };
 
-function getReminderValues(){
 
-    if((inputTextBoxes[0].value === "Enter a reminder" || inputTextBoxes[0].value === "Add another item" || inputTextBoxes[0].value === ' ' || inputTextBoxes[1].value === '')){
-        errormsg.textContent = "You have to fill out both fields"
-    } else {
-        errormsg.textContent = " ";
-        todolist.push(new reminderObject(inputTextBoxes[0].value, inputTextBoxes[1].value));
+//Editing Modal
 
-    } 
+const modal = document.getElementById('myModal'),
+      btn = document.getElementById("myBtn"),
+      span = document.getElementsByClassName("close")[0];
+
+span.onclick = function() {
+    modal.style.display = "none";
 }
 
-function getDeleteButtons(){
-    return document.querySelectorAll('tr td[data-test]');
-}
-
-//Delete a reminder item from the array and remove the item from the DOM
-function deleteReminder(){
-    //This removes the item from the dom and the item from the todolist   
-    console.log("deleting... ", parseInt(this.getAttribute('data-test')));
-    todolist.splice(parseInt(this.getAttribute('data-test')),1);
-    addNewReminder('nocheck');
-}
-
-function insertElement(){
-    // CAll function to add list items to the DOM
-    tablehook.insertAdjacentHTML('beforeend', addlistelement());
-    //Reset the event listener
-    deleteBottonNodeList = getDeleteButtons()
-    removeDeleteButtonListener();
-    addDeleteButtonListener();
-    inputTextBoxes[0].value = "Add another item";
-    inputTextBoxes[1].value = "";
-    var deletekey = document.querySelectorAll('tr td[data-test]');
-}
-
-function addlistelement(){
-    //Clear previous elements and render list 
-    while (tablehook.childNodes.length > 1) {
-        tablehook.removeChild(tablehook.lastChild);
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
     }
-    //Map the todolist array and add html table tags
-    var ArrayToHTML = todolist.map(function(cur,i,arr){
+}
+
+//Module
+var reminder = (function(){
+
+    let reminderList = [],
+    
+        //Make Public
+        init,
+        setConfig,
+    
+        addReminder,
+        deleteReminder,
+        editReminder,
+    
+        //Make private
+    
+        config = {
+            //buttons
+            submitButton: "",
+            editButton: "",
+            deleteButton: "",
+
+            //Dom elements
+            tableName: "",
+            reminderTextBox: "",
+            dateTextBox: ""
+        }
+
+    addReminder = function(){
+        reminderList.push(
+            {
+                reminderText: document.querySelector('input.reminder').value,reminderDate: document.querySelector('input.date').value
+            }
+        );
+        redrawReminders(reminderList, config.tableName);
         
-        return "<tr class='dynamic'>" + "<td>" + (i+1) + "</td>" + "<td>" + cur.reminder + "</td>" + "<td>" + cur.date + "</td>" + "<td data-test='" + (i) + "'>" + "<button>Delete</button>" + "</td>" +"</tr>";
-      
-    });
-
-    return ArrayToHTML.join(" ");
-       
-}
-
-function addNewReminder(nocheck){
-    //Use this to enable form validation
-    if(nocheck === true){
-        getReminderValues();
     }
-    insertElement();
-    console.table(todolist);
-}
 
-//EVENT LISTENERS
+    deleteReminder = function(id){
+        console.log("deleting... " + id);
+        reminderList.splice(id,1);
+        redrawReminders(reminderList, config.tableName);
+    }
 
-//Event listener for 'submit' button
-buttonhook.addEventListener('click', function(){
-    addNewReminder(true);
-},false);
+    editReminder = function(id){
 
-//Event listener for 'imput focus'
-inputTextBoxes[0].addEventListener('focus', function(){
-   inputTextBoxes[0].value = " ";
-})
+            let editReminderText = document.querySelector('.editReminderText');
+            let editReminderDate = document.querySelector('.editReminderDate');
 
-//Event listener for leaving 'imput focus'
-// inputTextBoxes[0].addEventListener('blur', function(){
-//     inputTextBoxes[0].value = "Enter a reminder";
-//  })
+            editReminderText.value = reminderList[id].reminderText;
+            editReminderDate.value = reminderList[id].reminderDate;
+            
+            modal.style.display = "block";
+            
+        
+    }
 
-//remove/unset event listener for all 'Delete' bottons
-function removeDeleteButtonListener(){
-    deleteBottonNodeList.forEach(function(item, index){
-        item.removeEventListener('click', deleteReminder);
-    });
-}
+    redrawReminders = function(array,tableId){
+    
+        let tableInsertPoint = document.querySelector(tableId);
 
-//add event listeners for all 'Delete' buttons
-function addDeleteButtonListener(){
-    deleteBottonNodeList.forEach(function(item, index){
-        item.addEventListener('click', deleteReminder);
-    });
-}
+        while (tableInsertPoint.childNodes.length > 2) {
+            tableInsertPoint.removeChild(tableInsertPoint.lastChild);
+        }
+
+        var ArrayToHTML = array.map(function(cur,i,arr){
+
+            return `<td> ${(i+1)} </td>
+                    <td class='editable'> ${cur.reminderText}</td>
+                    <td class='editable'> ${cur.reminderDate}</td>
+                    <td data-delete='${(i)}' class='deleteButton'><button>Delete</button></td>
+                    <td data-edit='${i}'><button class='editButton'>Edit</button></td>`
+            
+        }).forEach(element => {
+            let newTr = document.createElement('tr');
+            newTr.innerHTML = element;
+            tableInsertPoint.appendChild(newTr);
+        });
+
+        // Assign new event handlers
+        dynamicEvents();
+        
+    }
+
+    setConfig = function(settings){
+        
+        config.submitButton = settings.submitButton;
+        config.editButton = settings.editButton;
+        config.deleteButton = settings.deleteButton;
+        config.tableName = settings.tableName;
+        config.reminderTextBox = settings.reminderTextBox;
+        config.dateTextBox = settings.dateTextBox;
+    }
+
+    // getConfig = function(){
+
+    // }
+
+    init = function(){
+
+        let addButton = document.querySelector(config.submitButton);
+        let clearDefault = document.querySelector('.reminder');
+        let updateSubmit = document.querySelector('#updateReminder');
+    
+        addButton.addEventListener('click', function(){
+            addReminder();   
+        });
+
+        //Clear placeholder text
+        clearDefault.addEventListener('focus', function(){
+            clearDefault.value = " ";
+        })
+
+        updateSubmit.addEventListener('click', function(){
+            console.log('update clicked');
+        })
+
+    }
+
+    function dynamicEvents(){
+        
+    
+        let deleteButton = document.querySelectorAll(config.deleteButton);
+
+        deleteButton.forEach(function(item){
+            item.addEventListener('click',function(e){
+                deleteReminder(e.target.parentElement.getAttribute('data-delete'));
+            })
+        })
+
+        let editButton = document.querySelectorAll(config.editButton);
+
+        editButton.forEach(function(item){
+            item.addEventListener('click',function(e){
+                editReminder(e.target.parentElement.getAttribute('data-edit'));
+            })
+        })
+    }
+
+    return {
+        add: addReminder,
+        delete: deleteReminder,
+        edit: editReminder,
+
+        setConfig: setConfig,
+        // getConfig: getConfig,
+        init: init
+    }
+})();
 
 
 
+reminder.setConfig(settings);
+reminder.init();
 
 

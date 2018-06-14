@@ -5,30 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="app.css">
-    <title>Reminder App</title>
-
+    <title>Document</title>
 </head>
 <body>
-    <h3>Reminder App | City University Course</h3>
-    <!-- <ul id="tablehook"><li>Your reminder list is currently empty. Get Busy!</li></ul> -->
-    <table id="tablehook">
+    <table id='tablehook'>
             <tr>
-                <th>Item</th>
-                <th>Reminder</th>
-                <th>Due date</th>
-                <th>Delete</th>
-            </tr>           
+                    <th>Item</th>
+                    <th>Reminder</th>
+                    <th>Due date</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+        
     </table>
+
     <div id="inputholder">
         <p>Please enter a reminder in the box below</p>
         <p id="errormsg"></p>
-        <input type="text" name="reminder"  value="Enter a reminder">
-        <input id="date" type="date" value="">
+        <input class="reminder" type="text" name="reminder"  value="Enter a reminder">
+        <input class="date" type="date" value="">
         <!-- <input id="time" type="time"> -->
-        <button id="enterdata">Add Reminder</button>
+        <button id="submitButton">Add Reminder</button>
     </div>
-        
-    
-    <script src="app.js"></script>
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Please Update the fields below</p>
+          <input class="editReminderText" type="text" name="reminder-update">
+          <input class="editReminderDate" type="date" name="date-update">
+          <button id="updateReminder">Update Reminder</button>
+    </div>
+      
+    </div>
+
+    <script src="app3.js"></script>
 </body>
 </html>
